@@ -1,0 +1,226 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>KATAKU – Kuis KBBI</title>
+<style>
+:root{--bg:#eef0fa;--card:#fff;--ink:#12163a;--mut:#666b8f;--pri:#3b3fd8;--hl:#ffe14d;--ok:#12a36a;--bad:#e63946;--line:#dcdff2}
+@media(prefers-color-scheme:dark){:root{--bg:#0c0f2a;--card:#171b45;--ink:#f1f2ff;--mut:#9aa0cc;--pri:#8f93ff;--line:#2a2f66}}
+*{box-sizing:border-box;margin:0}html,body{min-height:100%}
+body{font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);padding:16px 16px 84px;max-width:560px;margin:auto}
+h1{font:800 34px Georgia,serif;letter-spacing:-1px}h1 mark{background:var(--hl);color:#12163a;padding:0 6px;border-radius:4px;transform:rotate(-2deg);display:inline-block}
+h2{font:700 20px Georgia,serif}h3{font-size:15px;margin:18px 0 8px}small,.mut{color:var(--mut);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:12px;text-align:left;transition:transform .12s,background .2s}
+button:active{transform:scale(.96)}button:focus-visible{outline:3px solid var(--pri)}
+.mode b{display:block;font-size:20px}.pri{background:var(--pri);color:#fff;border:0;text-align:center;font-weight:700;width:100%;margin:6px 0}
+.reco{width:100%;background:var(--hl);color:#12163a;border:0;font-weight:700}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden}.bar b{display:block;height:100%;background:var(--pri);border-radius:9px;transition:width .5s}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;margin-bottom:8px}.top button{padding:4px 10px}
+.tm{height:12px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:12px}.tm b{display:block;height:100%;width:100%;background:var(--ok);border-radius:9px}.tm b.lo{background:var(--bad)}
+.q{text-align:center;padding:26px 14px}.q h2{font-size:26px;margin-top:6px}
+.opt{display:block;width:100%;margin:10px 0;text-align:center;font:700 26px Georgia,serif;padding:20px 12px;animation:pop .25s}
+.opt.ok{background:var(--ok);color:#fff;border-color:var(--ok);animation:pop .3s}.opt.bad{background:var(--bad);color:#fff;border-color:var(--bad);animation:shake .35s}
+.opt.bad:not(:disabled){}.opt:disabled{opacity:1}
+#fb{min-height:90px;text-align:center}#fb p{margin:6px 0}
+.row{display:grid;grid-template-columns:96px 1fr 44px;gap:8px;align-items:center;margin:6px 0;font-size:14px}.row em{font-style:normal;text-align:right;color:var(--mut)}.row i{height:9px;background:var(--line);border-radius:9px;overflow:hidden}.row i b{display:block;height:100%;background:var(--pri)}
+.week{display:flex;gap:6px;align-items:flex-end;height:90px}.week div{flex:1;text-align:center;font-size:11px;color:var(--mut)}.week b{display:block;background:var(--pri);border-radius:6px 6px 0 0;min-height:3px;margin-bottom:3px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;gap:8px;padding:8px 16px calc(8px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--line)}nav button{flex:1;max-width:170px;text-align:center}nav .on{background:var(--pri);color:#fff;border:0}
+#ov{position:fixed;inset:0;background:#12163acc;display:grid;place-items:center;color:#fff;text-align:center;z-index:9;padding:20px}#ov div{animation:pop .5s}#ov span{font-size:64px;display:block}
+.chip{display:inline-block;background:var(--hl);color:#12163a;border-radius:20px;padding:3px 10px;margin:3px;font-size:13px;font-weight:600}
+.star{font-size:22px;padding:2px 10px;text-align:center}
+@keyframes pop{0%{transform:scale(.9);opacity:.4}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body><div id="app"></div>
+<script>
+const D=`apotek|apotik|S|1
+analisis|analisa|S|1
+mengubah|merubah|I|1
+risiko|resiko|S|1
+praktik|praktek|S|1
+kualitas|kwalitas|S|2
+kuantitas|kwantitas|S|2
+silakan|silahkan|E|1
+nasihat|nasehat|E|1
+izin|ijin|E|1
+Jumat|Jum'at|E|1
+hakikat|hakekat|E|2
+kaidah|kaedah|E|2
+objek|obyek|S|1
+subjek|subyek|S|1
+proyek|projek|S|1
+sistem|sistim|S|1
+metode|metoda|S|2
+teknik|tehnik|S|1
+teknologi|tehnologi|S|1
+ekspor|eksport|S|1
+impor|import|S|1
+Februari|Pebruari|E|1
+November|Nopember|E|1
+sekadar|sekedar|E|2
+hierarki|hirarki|S|2
+konkret|konkrit|S|2
+kongres|konggres|S|2
+frekuensi|frekwensi|S|2
+standar|standard|S|1
+kedaluwarsa|kadaluarsa|E|3
+memengaruhi|mempengaruhi|I|2
+antre|antri|E|1
+atlet|atlit|S|1
+azan|adzan|E|2
+bus|bis|S|1
+cenderamata|cinderamata|E|2
+ekstrem|ekstrim|S|1
+esai|esei|S|2
+frasa|frase|S|2
+hipotesis|hipotesa|S|2
+kuitansi|kwitansi|S|2
+lembap|lembab|E|2
+manajemen|managemen|S|1
+nakhoda|nahkoda|E|3
+napas|nafas|E|1
+paham|faham|E|1
+provinsi|propinsi|S|1
+rezeki|rejeki|E|1
+sah|syah|E|2
+saksama|seksama|E|3
+telepon|telpon|S|1
+teladan|tauladan|E|2
+utang|hutang|E|1
+zaman|jaman|E|1
+zakat|jakat|E|2
+Ramadan|Ramadhan|E|1
+khotbah|kotbah|E|2
+khawatir|kuatir|E|1
+jenazah|jenasah|E|2
+mazhab|madzhab|E|3
+rapi|rapih|E|1
+sanksi|sangsi|E|2
+survei|survey|S|1
+terampil|trampil|E|1
+tobat|taubat|E|2
+perajin|pengrajin|I|2
+perusakan|pengrusakan|I|2
+tanda tangan|tandatangan|E|2
+merek|merk|E|1
+kanker|kangker|E|1
+ambulans|ambulan|S|2
+aksesori|aksesoris|S|3
+baterai|batere|S|2
+kompleks|komplek|S|2
+koordinasi|kordinasi|S|1
+persen|prosen|S|2
+salat|shalat|E|1
+ustaz|ustad|E|3
+wudu|wudhu|E|2
+yogurt|yoghurt|S|2
+asas|azas|E|2
+cabai|cabe|E|1
+deskripsi|diskripsi|S|2
+diagnosis|diagnosa|S|2
+konsekuen|konsekwen|S|3
+makhluk|mahluk|E|2
+miliar|milyar|E|1
+sekretaris|sekertaris|E|1
+sintesis|sintesa|S|3
+teoretis|teoritis|S|3
+tren|trend|S|1
+atmosfer|atmosfir|S|2
+fondasi|pondasi|S|2
+karier|karir|S|1
+mengonsumsi|mengkonsumsi|I|2
+orisinal|orisinil|S|2
+definisi|difinisi|S|1
+kategori|katagori|S|1
+kaus|kaos|S|2
+komoditas|komoditi|S|3
+objektif|obyektif|S|2
+ijazah|ijasah|E|2
+jenius|genius|S|2
+kreativitas|kreatifitas|S|2
+aktivitas|aktifitas|S|1
+produktivitas|produktifitas|S|2
+efektivitas|efektifitas|S|2
+persentase|prosentase|S|2
+meterai|materai|S|3
+trotoar|trotoir|S|2`.split("\n").map((l,i)=>{const[b,t,c,v]=l.split("|");return{id:i,b,t,c:{S:"Serapan",E:"Ejaan",I:"Imbuhan"}[c],v:+v}});
+const $=s=>document.querySelector(s),KEY="kataku_v2",p=(a,b)=>b?Math.round(a/b*100):0;
+const td=()=>new Date().toISOString().slice(0,10),dayAdd=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+const rng=s=>()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const hash=s=>[...s].reduce((a,c)=>Math.imul(a^c.charCodeAt(0),16777619),2166136261);
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+S=S||{xp:0,streak:0,last:"",days:{},w:{},fav:[],bd:[],best:{},games:0,tc:0};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const TT=["Pemula","Murid KBBI","Penjaga Ejaan","Pakar Kata","Master KBBI"],TH=[0,200,600,1500,3500],GOAL=100;
+const lvl=x=>TH.reduce((a,t,j)=>x>=t?j:a,0);
+const BD={first:["🌱","Langkah Pertama"],c10:["🔥","Combo 10"],perf:["💯","Sempurna"],s3:["📆","Streak 3 Hari"],s7:["🏆","Streak 7 Hari"],r100:["🎯","100 Benar"],fast:["⚡","Kilat"]};
+const MODES={quick:["⚡","Quick","10 soal",{n:10,t:12}],std:["📘","Standard","20 soal",{n:20,t:10}],hard:["🧨","Hard","Level 2–3, 7 dtk",{n:15,t:7,min:2}],ta:["⏱️","Time Attack","60 detik",{n:999,T:60}],end:["♾️","Endless","3 nyawa",{n:999,t:10,lives:3}],daily:["📅","Daily","Soal sama hari ini",{n:10,t:12,seed:1}],prac:["🧘","Practice","Tanpa timer",{n:999,t:0}]};
+const dy=()=>S.days[td()]=S.days[td()]||{a:0,c:0,xp:0};
+const hap=x=>{try{navigator.vibrate&&navigator.vibrate(x)}catch(e){}};
+let G={};
+function nav(a){return`<nav>${[["home","🏠 Beranda"],["stats","📊 Statistik"],["favs","★ Favorit"]].map(x=>`<button data-a="${x[0]}" class="${x[0]==a?"on":""}">${x[1]}</button>`).join("")}</nav>`}
+function weak(){return Object.entries(S.w).filter(([i,w])=>w.x>0&&w.x/w.s>=.4).sort((a,b)=>b[1].x/b[1].s-a[1].x/a[1].s).map(e=>+e[0])}
+function reco(){const w=weak(),t=dy(),acc=p(S.tc,Object.values(S.w).reduce((a,x)=>a+x.s,0));
+if(w.length>=3)return["Latih "+Math.min(w.length,10)+" kata lemahmu","prac",w.slice(0,10)];
+if(!S.games)return["Mulai dengan ronde Quick","quick"];
+if(acc>=85)return["Akurasimu "+acc+"% — coba Hard","hard"];
+if(acc<60)return["Perkuat dasar di Practice","prac"];
+return["Lanjut ronde Standard","std"]}
+function view(v){clearTimeout(G.to);cancelAnimationFrame(G.raf);$("#app").innerHTML=v=="stats"?stats():v=="favs"?favs():home()+nav("home")}
+function home(){const l=lvl(S.xp),nx=TH[l+1],d=dy(),r=reco();
+return`<h1>KATA<mark>KU</mark></h1><p class=mut>Baku atau tidak baku? Tebak sebelum waktu habis.</p>
+<div class=card><div class=top><span>Lv ${l+1} · ${TT[l]}</span><span>🔥 ${S.streak} hari</span></div><div class=bar><b style="width:${nx?p(S.xp-TH[l],nx-TH[l]):100}%"></b></div><small>${S.xp} XP${nx?" · "+(nx-S.xp)+" XP lagi ke "+TT[l+1]:" · level tertinggi"}</small>
+<h3>Target harian</h3><div class=bar><b style="width:${Math.min(100,p(d.xp,GOAL))}%"></b></div><small>${d.xp}/${GOAL} XP${d.xp>=GOAL?" ✅ tercapai":""}</small></div>
+<button class=reco data-a=reco>✨ ${r[0]}</button>
+<h3>Pilih mode</h3><div class=grid>${Object.entries(MODES).map(([k,m])=>`<button class=mode data-a="start:${k}"><b>${m[0]}</b>${m[1]}<br><small>${m[2]}${S.best[k]?" · rekor "+S.best[k]:""}</small></button>`).join("")}</div>
+<h3>Lencana</h3>${Object.entries(BD).map(([k,b])=>`<span class=chip style="opacity:${S.bd.includes(k)?1:.3}">${b[0]} ${b[1]}</span>`).join("")}`}
+function build(m,ids){const c=MODES[m][3],r=c.seed?rng(hash(td())):Math.random;
+let a=(ids?D.filter(d=>ids.includes(d.id)):D.filter(d=>d.v>=(c.min||1)));
+a=a.map(d=>{const w=S.w[d.id]||{s:0,x:0};const k=c.seed||ids?r():r()/(1+3*(w.x/(w.s||1))+(w.s?0:.5));return{d,k,f:r()<.5}}).sort((x,y)=>x.k-y.k).slice(0,c.n);return a}
+function start(m,ids){if(ids&&!ids.length)return;const c=MODES[m][3];G={m,c,q:build(m,ids),i:0,sc:0,co:0,mc:0,ok:0,n:0,bad:[],lives:c.lives||0,fast:0,T0:performance.now()};ask()}
+function ask(){clearTimeout(G.to);if(G.i>=G.q.length||(G.c.lives&&G.lives<=0))return fin();
+const q=G.q[G.i],d=q.d;G.o=q.f?[d.t,d.b]:[d.b,d.t];G.lock=0;G.dl=performance.now()+(G.c.t||0)*1000;
+$("#app").innerHTML=`<div class=top><button data-a=quit aria-label="Keluar">✕</button><span>⭐ ${G.sc}</span><span>${G.c.lives?"❤️".repeat(G.lives):G.m=="ta"?"":G.i+1+"/"+G.q.length}</span><span>${G.co>1?"🔥×"+G.co:""}</span></div>
+<div class=tm><b id=tb></b></div><div class="card q"><small>${d.c} · Level ${d.v}</small><h2>Mana yang baku?</h2></div>
+<button class=opt data-a=ans:0>${G.o[0]}</button><button class=opt data-a=ans:1>${G.o[1]}</button><div id=fb></div>`;tick()}
+function tick(){cancelAnimationFrame(G.raf);const ta=G.m=="ta",tot=(ta?G.c.T:G.c.t)*1000;if(!tot)return;
+const f=()=>{const l=(ta?G.T0+tot:G.dl)-performance.now(),b=$("#tb");if(b){b.style.width=Math.max(0,l/tot*100)+"%";b.className=l/tot<.3?"lo":""}
+if(l<=0){ta?fin():ans(-1)}else G.raf=requestAnimationFrame(f)};f()}
+function ans(i){if(G.lock||G.done)return;G.lock=1;cancelAnimationFrame(G.raf);
+const d=G.q[G.i].d,ok=i>=0&&G.o[i]===d.b,left=G.c.t?Math.max(0,(G.dl-performance.now())/1000):0,w=S.w[d.id]=S.w[d.id]||{s:0,x:0},y=dy();let pts=0;
+w.s++;y.a++;G.n++;
+if(ok){G.ok++;G.co++;G.mc=Math.max(G.mc,G.co);pts=10+Math.min(G.co-1,5)*2+(G.c.t?Math.round(left/G.c.t*5):0);G.sc+=pts;y.c++;S.tc++;if(G.c.t&&G.c.t-left<2)G.fast=1}
+else{w.x++;G.co=0;G.bad.push(d.id);if(G.c.lives)G.lives--}
+document.querySelectorAll(".opt").forEach((b,j)=>{b.disabled=1;if(G.o[j]===d.b)b.classList.add("ok");else if(j===i)b.classList.add("bad")});
+hap(ok?15:[40,30,40]);const manual=!ok||G.m=="prac",ta=G.m=="ta";
+$("#fb").innerHTML=(ok?`<p style="color:var(--ok);font-weight:700">Benar! +${pts} XP${G.co>2?" · combo ×"+G.co:""}</p>`:`<p>${i<0?"⏰ Waktu habis. ":""}Yang baku: <b>${d.b}</b> <span class=mut>(bukan ${d.t})</span></p>`)+(ta?"":`<button class=star data-a="fav:${d.id}">${S.fav.includes(d.id)?"★":"☆"}</button>`)+(manual&&!ta?`<button class=pri data-a=go>Lanjut</button>`:"");
+save();if(ta||!manual)G.to=setTimeout(()=>A.go(),ta?250:700);else if(ta)A.go()}
+function fin(){if(G.done)return;G.done=1;cancelAnimationFrame(G.raf);clearTimeout(G.to);
+const o=lvl(S.xp),y=dy(),t=td();S.xp+=G.sc;y.xp+=G.sc;const nl=lvl(S.xp);S.games++;
+if(G.n){if(S.last!=t){S.streak=S.last==dayAdd(t,-1)?S.streak+1:1;S.last=t}}
+S.best[G.m]=Math.max(S.best[G.m]||0,G.sc);
+const e=[G.n&&"first",G.mc>=10&&"c10",G.n>=10&&G.ok==G.n&&"perf",S.streak>=3&&"s3",S.streak>=7&&"s7",S.tc>=100&&"r100",G.fast&&"fast"].filter(k=>k&&!S.bd.includes(k));S.bd.push(...e);save();
+const a=p(G.ok,G.n),r=reco(),msg=!G.n?"Belum ada jawaban.":a>=90?"Luar biasa! Kamu hampir sekelas penyusun KBBI 🔥":a>=70?"Mantap, tinggal sedikit lagi!":"Setiap salah adalah bahan belajar. Ulangi yang salah, yuk!";
+$("#app").innerHTML=`<h1>Hasil</h1><div class=card><h2>${msg}</h2><p>${G.ok}/${G.n} benar (${a}%) · combo terbaik ×${G.mc}</p><p><b>+${G.sc} XP</b> · skor terbaik mode ini ${S.best[G.m]}</p>${e.map(k=>`<span class=chip>${BD[k][0]} Lencana baru: ${BD[k][1]}</span>`).join("")}</div>
+${G.bad.length?`<div class=card><h3 style="margin-top:0">Yang perlu dilatih</h3>${[...new Set(G.bad)].map(i=>`<p><b>${D[i].b}</b> <span class=mut>bukan ${D[i].t}</span></p>`).join("")}</div><button class=pri data-a=retry>🧘 Latih yang salah (${new Set(G.bad).size})</button>`:""}
+<button class=reco data-a=reco>✨ Berikutnya: ${r[0]}</button><button class=pri data-a=home style="background:var(--card);color:var(--ink);border:1px solid var(--line)">Beranda</button>`;
+if(nl>o)$("#app").insertAdjacentHTML("beforeend",`<div id=ov data-a=lvup><div><span>🎉</span><h1>Naik level!</h1><h2>${TT[nl]}</h2><p>Ketuk untuk lanjut</p></div></div>`);hap(nl>o?[60,40,60,40,120]:0)}
+function agg(k){const o={};D.forEach(d=>{const w=S.w[d.id];if(!w)return;const x=o[d[k]]=o[d[k]]||[0,0];x[0]+=w.s;x[1]+=w.s-w.x});return o}
+function stats(){const days=[...Array(7)].map((_,i)=>{const d=dayAdd(td(),i-6);return[d.slice(8),(S.days[d]||{}).xp||0]}),mx=Math.max(1,...days.map(x=>x[1])),
+rows=o=>Object.entries(o).sort().map(([k,v])=>`<div class=row><span>${isNaN(k)?k:"Level "+k}</span><i><b style="width:${p(v[1],v[0])}%"></b></i><em>${p(v[1],v[0])}%</em></div>`).join("")||"<small>Belum ada data.</small>",
+ws=Object.entries(S.w).filter(([i,w])=>w.x>0).sort((a,b)=>b[1].x/b[1].s-a[1].x/a[1].s||b[1].x-a[1].x).slice(0,5),
+c=Object.entries(agg("c")).filter(x=>x[1][0]>=3).map(([k,v])=>[k,p(v[1],v[0])]).sort((a,b)=>a[1]-b[1]),
+tip=c.length?`Kategori paling lemahmu: ${c[0][0]} (${c[0][1]}%). ${weak().length?"Latih "+Math.min(weak().length,10)+" kata lemah lewat tombol di bawah.":"Perbanyak latihan di kategori itu."}`:"Mainkan beberapa ronde dulu agar saran personal muncul.";
+return`<h1>Statistik</h1><div class=card><h3 style="margin-top:0">XP 7 hari terakhir</h3><div class=week>${days.map(x=>`<div><b style="height:${x[1]/mx*70}px"></b>${x[1]||""}<br>${x[0]}</div>`).join("")}</div></div>
+<div class=card><h3 style="margin-top:0">Akurasi per kategori</h3>${rows(agg("c"))}<h3>Akurasi per level</h3>${rows(agg("v"))}</div>
+<div class=card><h3 style="margin-top:0">Kata lemah</h3>${ws.map(([i,w])=>`<p><b>${D[i].b}</b> <span class=mut>bukan ${D[i].t} · salah ${w.x}/${w.s}</span></p>`).join("")||"<small>Belum ada kata yang salah. Bagus!</small>"}</div>
+<div class=card><b>💡 Saran</b><p>${tip}</p></div>${weak().length?`<button class=reco data-a=reco>🧘 Latih kata lemah</button>`:""}
+<button data-a=reset style="margin-top:14px;width:100%;color:var(--bad)">Reset data</button>`+nav("stats")}
+function favs(){return`<h1>Favorit</h1>${S.fav.length?`<button class=reco data-a=favplay>🧘 Latih ${S.fav.length} kata favorit</button>`:`<p class=mut>Belum ada favorit. Ketuk ☆ setelah menjawab untuk menyimpan kata.</p>`}${S.fav.map(i=>`<div class="card top"><span><b>${D[i].b}</b> <span class=mut>bukan ${D[i].t}</span></span><button class=star data-a="unfav:${i}">★</button></div>`).join("")}`+nav("favs")}
+const A={start:m=>start(m),ans:i=>ans(+i),home:()=>view("home"),stats:()=>view("stats"),favs:()=>view("favs"),
+reco:()=>{const r=reco();start(r[1],r[2])},retry:()=>start("prac",[...new Set(G.bad)]),favplay:()=>start("prac",S.fav.slice()),
+go:()=>{clearTimeout(G.to);if(G.lock){G.i++;ask()}},quit:()=>{G.done=1;view("home")},lvup:()=>$("#ov").remove(),
+fav:(id,el)=>{id=+id;const k=S.fav.indexOf(id);k<0?S.fav.push(id):S.fav.splice(k,1);save();el.textContent=k<0?"★":"☆"},
+unfav:id=>{S.fav=S.fav.filter(x=>x!=id);save();view("favs")},
+reset:(_,el)=>{if(el.dataset.arm){try{localStorage.removeItem(KEY)}catch(e){}location.reload()}else{el.dataset.arm=1;el.textContent="Yakin? Ketuk lagi untuk menghapus semua data";setTimeout(()=>{delete el.dataset.arm;el.textContent="Reset data"},3000)}}};
+document.addEventListener("click",e=>{const el=e.target.closest("[data-a]");if(!el)return;const[a,x]=el.dataset.a.split(":");A[a]&&A[a](x,el)});
+view("home");
+</script></body></html>
